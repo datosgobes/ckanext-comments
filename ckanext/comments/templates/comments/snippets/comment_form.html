@@ -3,14 +3,34 @@
 
 {% import 'macros/form.html' as form %}
 
-<form class="form comment-form">
+
+<form class="form comment-form mt-4" id="formNewComment{{'_' + comment_id if comment_id else ''}}" {% if comment_id %}data-id="{{comment_id}}"{% endif %} style="display: none;">
   {{ h.csrf_input() }}
   <fieldset>
-    <legend>{{ _('Leave a comment') }}</legend>
-    {{ form.textarea('content', id='comment-content', label=_('Content')) }}
-  </fieldset>
+    {% if c.user %}
+      {# Fields for logged in users #}
+      {{ form.textarea('content', id='comment-content', classes=['comment-content'],  is_required =true, label=_('Comment')) }}
+      <p class="italic">{{ _('Datos.gob.es wants to encourage the participation of users through comments that contribute to enriching the content published on the website. The comments received will be reviewed and approved by the portal management team to ensure quality. It reserves the right to remove comments that it deems inappropriate. Therefore, comments that include insults, disqualifications or considerations unrelated to the content in question will not be published. Comments that include personal data or that allow the identification of deceased people will not be published.') }}</p>
+    {% else %}
+    <div class="container mt-2 mb-2 flex-gap-05">
+      <span class="control-required">* </span><span class="italic">{{_('Indicates required fields')}}</span>
+    </div>
+      {{ form.input('username', id='comment-name', label=_('Your name')) }}
 
-  <div class="form-group control-full">
+      {{ form.input('email', type='email', id='comment-email', classes=['comment-email'],  is_required = 'true', label=_('Email')) }}
+      <div id="edit-mail--description" >
+       <span class="italic">{{_('The content of this field is kept private and will not be shown publicly.')}}</span>
+      </div>
+
+      {{ form.textarea('content', id='comment-content', classes=['comment-content'], is_required =true, label=_('Comment')) }}
+      <p class="italic">{{ _('Datos.gob.es wants to encourage the participation of users through comments that contribute to enriching the content published on the website. The comments received will be reviewed and approved by the portal management team to ensure quality. It reserves the right to remove comments that it deems inappropriate. Therefore, comments that include insults, disqualifications or considerations unrelated to the content in question will not be published. Comments that include personal data or that allow the identification of deceased people will not be published.') }}</p>
+      {{ form.checkbox('consent', id='comment-consent', classes=['comment-consent'],  is_required = false ,label=_('I consent to Red.es, with Tax ID Q-2891006-E, as the data controller, processing the data provided directly by me, as well as data obtained indirectly from my activity, in accordance with the Privacy Policy and with the General Directors Instruction on Exercising Rights to Personal Data Protection, available at the following link: <a href="https://www.red.es/es/proteccion-de-datos"> Personal data protection*</a><span class="control-required">* </span>')) }} 
+      {# Fields for anonymous users #}
+      
+    {% endif %}
+    <input type="hidden" id='successful-sending-message' name='successful-sending-message' value="{{_('Thank you for posting a new comment on datos.gob.es portal. Your comment has been queued for review by site administrators and will be published after approval.')}}" />
+    <input type="checkbox" name="url" value="1" style="display:none !important" tabindex="-1" autocomplete="off">
+    <div class="form-group control-full flex flex-justify-center mt-5">
     <button type="submit" class="btn btn-primary">
       {{ _('Save') }}
     </button>

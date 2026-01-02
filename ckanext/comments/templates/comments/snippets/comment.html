@@ -1,60 +1,102 @@
 {#
-  comment - dict
-  #}
-
+    comment - dict
+    #}
+  
+    {% set author_organism = h.comments_get_organismo(comment) %}
+    {% set content_reply, username_reply = h.comments_get_reply(comment) %}
+  
+  
 <div class="comment comment-state-{{ comment.state }}" id="comment-{{ comment.id }}">
     <div class="comment-heading">
-        <div class="comment-authored">
-            <div class="author-avatar">
-                {{ h.user_image(comment.author.name, size=26) }}
-            </div>
-
-            <div class="comment-meta">
-                <div class="author-name">
-                    {{ comment.author.fullname or comment.author.name }}
-                </div>
-                <div class="comment-date">
-                    {{ h.time_ago_from_timestamp(comment.modified_at or comment.created_at) }}
-                </div>
-            </div>
+        {% set comment_author = comment.author.fullname or comment.author.name or comment.username or "anónimo" %}
+        {% set comment_date = h.comments_custom_date_comments(comment.modified_at or comment.created_at) %}
+        {% trans author=author_organism, date=comment_date %}
+        <div class="flex-display flex-gap-1 flex-baseline mb-2">
+            <span class="comment-heading__author">
+                {{author}}
+            </span>
+            <span class="comment-heading__date">
+                {{ date }}
+            </span>
         </div>
-        <div class="comment-actions">
-            {% if h.check_access('comments_reply_create', {"reply_to_id": comment.id}) %}
-                <button aria-label="reply to comment" title="{{ _('Reply') }}" class="btn btn-default comment-action reply-to-comment" data-id="{{ comment.id }}">
-                    <i class="fa fa-mail-reply"></i>
-                    <span class="text">{{ _('Reply') }}</span>
-                </button>
-            {% endif %}
-            {% if not comment.approved and h.check_access('comments_comment_approve', comment) %}
-                <button aria-label="approve comment" title="{{ _('Approve') }}" class="btn btn-success comment-action approve-comment" data-id="{{ comment.id }}">
-                    <i class="fa fa-check"></i>
-                    <span class="text">{{ _('Approve') }}</span>
-                </button>
-            {% endif %}
-            {% if h.check_access('comments_comment_update', comment) %}
-                <button aria-label="edit comment" title="{{ _('Edit') }}" class="btn btn-default comment-action edit-comment" data-id="{{ comment.id }}">
-                    <i class="fa fa-edit"></i>
-                    <span class="text">{{ _('Edit') }}</span>
-                </button>
-                <button aria-label="save comment" title="{{ _('Save') }}" class="btn btn-default comment-action save-comment hidden" data-id="{{ comment.id }}">
-                    <i class="fa fa-edit"></i>
-                    <span class="text">{{ _('Save') }}</span>
-                </button>
-            {% endif %}
-
-            {% if h.check_access('comments_comment_delete', comment) %}
-                <button aria-label="remove comment" type="button" class="btn btn-remove comment-action" data-toggle="modal" data-target="#confirmation-modal-{{ comment.id }}">
-                    <i class="fa fa-trash-o"></i>
-                    <span class="text">{{ _('Remove') }}</span>
-                </button>
-                {% snippet 'comments/snippets/confirmation.html', comment_id=comment.id %}
-            {% endif %}
+        {% endtrans %}
+        <div class="comment-heading__summary flex-display w--100 mb-2 pb-3">
         </div>
     </div>
     <div class="comment-body">
         <div class="comment-content">
-            {{- (comment.content)|replace('\n', '\n<br/>'|safe) -}}
+            {% if h.comments_is_html(comment.content) %}
+                <div class="comment-content">{{ comment.content|safe }}</div>
+            {% else %}
+                <div class="comment-content">{{- (comment.content)|replace('\n', '\n<br/>'|safe) -}}</div>
+            {% endif %}
+                
         </div>
+
+        <div class="comment-actions">
+            <ul>
+                {% if h.check_access('comments_comment_delete', comment) %}
+                    <li>
+                        <button aria-label="remove comment" type="button" class="comment-actions__item btn-link comment-action" data-toggle="modal" data-target="#confirmation-modal-{{ comment.id }}">
+                            <span class="operation-item">
+                            <img src="{{ h.url_for_static('/themes/custom/dge_theme/images/icons/operation-comment_delete.svg') }}" alt="{{ _('Remove') }}">
+                            </span>
+                            <span class="operation-text">{{ _('Remove') }}</span>
+                        </button>
+                    </li>
+                    {% snippet 'comments/snippets/confirmation.html', comment_id=comment.id %}
+                {% endif %}
+                {% if not comment.approved and h.check_access('comments_comment_approve', comment) %}
+                    <li>
+                        <button aria-label="approve comment" title="{{ _('Approve') }}" class="comment-actions__item btn-link comment-action approve-comment" data-id="{{ comment.id }}">
+                            <span class="operation-item">
+                            <img src="{{ h.url_for_static('/themes/custom/dge_theme/images/icons/operation-comment_approve.svg') }}" alt="{{ _('Approve') }}">
+                            </span>
+                            <span class="operation-text">{{ _('Approve') }}</span>
+                        </button>
+                    </li>
+                {% endif %} 
+                {% if comment.approved and h.check_access('comments_comment_draft', comment) %}
+                    <li>
+                        <button aria-label="approve comment" title="{{ _('Unpublish') }}" class="comment-actions__item btn-link comment-action draft-comment" data-id="{{ comment.id }}">
+                            <span class="operation-item">
+                            <img src="{{ h.url_for_static('/themes/custom/dge_theme/images/icons/operation-comment_draft.svg') }}" alt="{{ _('Unpublish') }}">
+                            </span>
+                            <span class="operation-text">{{ _('Unpublish') }}</span>
+                        </button>
+
+                    </li>
+                {% endif %} 
+                {% if h.check_access('comments_comment_update', comment) %}
+                    <li>
+                        <button aria-label="edit comment" title="{{ _('Edit') }}" class="comment-actions__item btn-link comment-action edit-comment" data-id="{{ comment.id }}">
+                            <span class="operation-item">
+                            <img src="{{ h.url_for_static('/themes/custom/dge_theme/images/icons/operation-comment_edit.svg') }}" alt="{{ _('Edit') }}">
+                            </span>
+                            <span class="operation-text">{{ _('Edit') }}</span>
+                        </button>
+
+                        <button aria-label="save comment" title="{{ _('Save') }}" class="comment-actions__item btn-link comment-action save-comment hidden" data-id="{{ comment.id }}">
+                            <span class="operation-item">
+                            <img src="{{ h.url_for_static('/themes/custom/dge_theme/images/icons/operation-comment_save.svg') }}" alt="{{ _('Save') }}">
+                            </span>
+                            <span class="operation-text">{{ _('Save') }}</span>
+                        </button>
+                    </li>
+                {% endif %}
+
+                {% if comment.id and not h.comments_is_a_blocked_entity(subject_id, subject_type)%}
+                    <button id="addNewComment_{{ comment.id }}" class="comment-actions__item btn btn-secondary button--link" title="{{ _('Reply') }}">
+                        <span class="operation-item">
+                        <img src="{{ h.url_for_static('/themes/custom/dge_theme/images/icons/operation-comment_reply.svg') }}" alt="{{ _('Reply') }}">
+                        </span>
+                        <span class="operation-text">{{ _('Reply') }}</span>
+                    </button>
+                {% endif %}
+            </ul>
+            {% snippet 'comments/snippets/comment_form.html', comment_id=comment.id, subject_id=subject_id, subject_type=subject_type %}
+        </div>
+
     </div>
     <div class="comment-footer">
 

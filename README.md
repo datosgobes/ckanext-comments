@@ -166,6 +166,27 @@ pytest
 ```
 
 
+## Attribution and origin of the code
+
+This development is based on the ckanext-comments project, created and maintained by DataShades, available in its public repository under AGPL-3.0 licence.
+
+This work has been adapted, expanded and modified by the public entity Red.es for integration and use on the datos.gob.es portal. The modifications include functional, structural and presentation adjustments, as well as the incorporation of specific headers in the modified files to reflect the changes made.
+
+In accordance with the terms of the AGPL-3.0 licence, recognition of the original project and redistribution of the derivative code under the same licence is maintained.
+
+## Main modifications introduced
+
+* Adaptation of the behaviour of the comment system to the functional requirements of datos.gob.es.
+
+* Customisation of Jinja2 templates and snippets.
+
+* Incorporation of new licence headers for modified files.
+
+* Internal improvements in the management of comment threads, permissions and approval flows.
+
+* Integration with components specific to the CKAN environment deployed by datos.gob.es
+
+
 ## License
 
 [AGPL](https://www.gnu.org/licenses/agpl-3.0.en.html)
