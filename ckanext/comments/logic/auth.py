@@ -1,3 +1,20 @@
+# Copyright (C) 2025 Entidad Pública Empresarial Red.es
+#
+# This file is part of "comments (datos.gob.es)".
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+
 from __future__ import annotations
 
 import logging
@@ -83,7 +100,16 @@ def comment_approve(context, data_dict):
     comment = context["session"].query(Comment).filter(Comment.id == id).one_or_none()
     if not comment:
         return {"success": False}
+    return {"success": is_moderator(context["auth_user_obj"], comment, comment.thread)}
 
+@auth
+def comment_draft(context, data_dict):
+    id = data_dict.get("id")
+    if not id:
+        return {"success": False}
+    comment = context["session"].query(Comment).filter(Comment.id == id).one_or_none()
+    if not comment:
+        return {"success": False}
     return {"success": is_moderator(context["auth_user_obj"], comment, comment.thread)}
 
 
@@ -104,6 +130,42 @@ def comment_update(context, data_dict):
         return {"success": False}
 
     by_author = comment.is_authored_by(context["user"])
-    if by_author or is_moderator(context["auth_user_obj"], comment, comment.thread):
+    
+    if is_moderator(context["auth_user_obj"], comment, comment.thread):
         return {"success": _can_edit(comment.state, by_author)}
     return {"success": False}
+
+
+@auth
+@tk.auth_allow_anonymous_access
+def blocked_entity_show(context, data_dict):
+    return {"success": True}
+
+@auth
+def blocked_entity_create(context, data_dict):
+    if not _user_is_sysadmin(context):
+        return {'success': False, 'msg': tk._('Only sysadmins can block add new comments')}
+    else:
+        return {'success': True}
+
+@auth
+def blocked_entity_delete(context, data_dict):
+    if not _user_is_sysadmin(context):
+        return {'success': False, 'msg': tk._('Only sysadmins can unblock add new comments')}
+    else:
+        return {'success': True}
+
+
+def _user_is_sysadmin(context):
+    '''
+        Checks if the user defined in the context is a sysadmin
+
+        rtype: boolean
+    '''
+    model = context['model']
+    user = context['user']
+    user_obj = model.User.get(user)
+    if not user_obj:
+        raise tk.Objectpt.ObjectNotFound('User {0} not found').format(user)
+
+    return user_obj.sysadmin

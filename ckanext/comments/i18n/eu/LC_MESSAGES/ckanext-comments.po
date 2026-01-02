@@ -1,0 +1,196 @@
+# Basque translations for ckanext-comments.
+# Copyright (C) 2025 Entidad Pública Empresarial Red.es
+#
+# This file is part of "comments (datos.gob.es)".
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+#
+		
+msgid ""
+msgstr ""
+"Project-Id-Version: ckanext-comments 0.0.1\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2024-11-28 12:01+0000\n"
+"PO-Revision-Date: 2024-11-28 12:51+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: eu\n"
+"Language-Team: eu <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.7.0\n"
+
+#: ckanext/comments/templates/comments/snippets/comment_form.html:8
+msgid "Add new comment"
+msgstr "Gehitu iruzkin berria"
+
+#: ckanext/comments/assets/js/comments-thread.js:241
+msgid "An Error Occurred"
+msgstr "Errore bat gertatu da"
+
+#: ckanext/comments/templates/comments/snippets/comment.html:33
+#: ckanext/comments/templates/comments/snippets/comment.html:34
+msgid "Approve"
+msgstr "Onartu"
+
+#: ckanext/comments/templates/comments/snippets/confirmation.html:18
+msgid "Are you sure you want to permanently delete this comment?"
+msgstr "Ziur iruzkin hau betiko ezabatu nahi duzula?"
+
+#: ckanext/comments/assets/js/comments-thread.js:146
+#: ckanext/comments/templates/comments/snippets/confirmation.html:35
+msgid "Cancel"
+msgstr "Utzi"
+
+#: ckanext/comments/templates/comments/snippets/comment_form.html:19
+#: ckanext/comments/templates/comments/snippets/comment_form.html:33
+msgid "Comment"
+msgstr "Iruzkina"
+
+#: ckanext/comments/assets/js/comments-thread.js:242
+msgid "Comment cannot be updated"
+msgstr "Iruzkina ezin da eguneratu"
+
+#: ckanext/comments/templates/comments/snippets/thread.html:15
+msgid "Comments"
+msgstr "Iruzkinak"
+
+#: ckanext/comments/templates/comments/snippets/confirmation.html:15
+msgid "Confirmation window"
+msgstr "Berrespen leihoa"
+
+#: ckanext/comments/templates/comments/snippets/comment_form.html:39
+msgid ""
+"Datos.gob.es wants to encourage the participation of users through "
+"comments that contribute to enriching the content published on the "
+"website. The comments received will be reviewed and approved by the "
+"portal management team to ensure quality. It reserves the right to remove"
+" comments that it deems inappropriate. Therefore, comments that include "
+"insults, disqualifications or considerations unrelated to the content in "
+"question will not be published. Comments that include personal data or "
+"that allow the identification of deceased people will not be published."
+msgstr "Datos.gob.es taldeak erabiltzaileen partaidetza sustatu nahi du; hori dela eta, erabiltzaileek webguneko edukiak hobetzen lagundu ahal duten iruzkinak idatz ditzakete. Ataria kudeatzen duen taldeak jasotako iruzkinak aztertu eta, hala badagokio, onartu egingo ditu, kalitatea bermatze aldera. Datos.gob.es taldeak beretzat gordetzen du desegokitzat jotzen dituen iruzkinak ezabatzeko eskubidea. Hortaz, ez dira argitaratuko irainak, ospe kentzeak edo edukiekin zerikusirik ez duten aipamenak dituzten iruzkinak. Datu pertsonalak dituzten edo hildakoak identifikatzeko aukera ematen duten iruzkinak ere ez dira argitaratuko."
+
+#: ckanext/comments/templates/comments/snippets/comment.html:40
+#: ckanext/comments/templates/comments/snippets/comment.html:41
+msgid "Unpublish"
+msgstr "Desargitaratu"
+
+#: ckanext/comments/templates/comments/snippets/comment.html:47
+#: ckanext/comments/templates/comments/snippets/comment.html:48
+msgid "Edit"
+msgstr "Editatu"
+
+#: ckanext/comments/templates/comments/snippets/comment_form.html:28
+msgid "Email"
+msgstr "Eposta"
+
+#: ckanext/comments/templates/comments/snippets/confirmation.html:28
+msgid "Email body"
+msgstr "Posta elektronikoaren gorputza"
+
+#: ckanext/comments/templates/comments/snippets/confirmation.html:21
+msgid "Email notification"
+msgstr "Posta elektronikoaren jakinarazpena"
+
+#: ckanext/comments/templates/comments/snippets/confirmation.html:24
+msgid "Email subject"
+msgstr "Posta elektronikoaren gaia"
+
+#: ckanext/comments/templates/comments/snippets/comments_list.html:10
+msgid "Hide answers"
+msgstr "Ezkutatu erantzunak"
+
+#: ckanext/comments/templates/comments/snippets/comment_form.html:40
+msgid ""
+"I consent to Red.es, with Tax ID Q-2891006-E, as the data controller, "
+"processing the data provided directly by me, as well as data obtained "
+"indirectly from my activity, in accordance with the Privacy Policy and with "
+"the General Directors Instruction on Exercising Rights to Personal Data "
+"Protection, available at the following link: <a href=\"https://www.red.es/es"
+"/proteccion-de-datos\"> Personal data protection*</a><span class=\"control-required\">* </span>"
+msgstr "Baimena ematen diot Red.es-ri (IFK: Q-2891006-E), tratamenduaren arduradun gisa, nik zuzenean emandako datuak prozesatzeko, baita nire jardueraren bitartez zeharka iritsi zaizkionak ere, Pribatutasun Politikari jarraiki eta Datu Pertsonalak Babesteko Eskubideak Erabiltzearen inguruko Zuzendari Nagusiaren Aginduei jarraiki. Esteka honetan aurkituko dituzue: <a href=\"https://www.red.es/eu/datuen-babesa\" >Datu pertsonalen babesa</a>*.<span class=\"control-required\">* </span>"
+
+#: ckanext/comments/templates/comments/snippets/comment_form.html:23
+msgid "Indicates required fields"
+msgstr "Beharrezko eremuak adierazten ditu"	
+																
+#: ckanext/comments/templates/comments/snippets/comment.html:26
+#: ckanext/comments/templates/comments/snippets/confirmation.html:36
+#: ckanext/comments/templates/comments/snippets/confirmation.html:37
+msgid "Remove"
+msgstr "Ezabatu"
+
+#: ckanext/comments/assets/js/comments-thread.js:143
+#: ckanext/comments/templates/comments/snippets/comment_form.html:8
+msgid "Reply"
+msgstr "Erantzun"
+
+#: ckanext/comments/templates/comments/snippets/comment.html:50
+#: ckanext/comments/templates/comments/snippets/comment.html:51
+#: ckanext/comments/templates/comments/snippets/comment_form.html:43
+msgid "Save"
+msgstr "Gorde"
+
+#: ckanext/comments/templates/comments/snippets/comment.html:11
+#, python-format
+msgid "Submitted by %(author)s on %(date)s"
+msgstr "%(author)s-ek bidalia %(date)s-en"
+
+#: ckanext/comments/templates/comments/snippets/comment_form.html:30
+msgid "The content of this field is kept private and will not be shown publicly."
+msgstr "Eremu honen edukia jendaurrean erakutsiko da"
+
+#: ckanext/comments/templates/comments/snippets/comments_list.html:9
+msgid "View answers"
+msgstr "Ikusi erantzunak"
+
+#: ckanext/comments/templates/comments/snippets/comment_form.html:14
+msgid "Your comment has been sent successfully"
+msgstr "Zure iruzkina behar bezala bidali da"
+
+#: ckanext/comments/templates/comments/snippets/comment_form.html:26
+msgid "Your name"
+msgstr "Zure izena"
+
+msgid "In reply to"
+msgstr ""
+
+
+msgid "by"
+msgstr "arabera"
+
+
+msgid "anonymous"
+msgstr ""
+
+
+msgid " (not verified)"
+msgstr ""
+
+msgid "Thank you for posting a new comment on datos.gob.es portal. Your comment has been queued for review by site administrators and will be published after approval."
+msgstr "Eskerrik asko datos.gob.es atarian iruzkin berri bat gehitzeagatik. Zure iruzkina ilaran dago gunearen administratzaileak aztertu zain; onartu ondoren argitaratuko da."
+
+#: ckanext/comments/templates/comments/snippets/comment_form.html:18
+msgid "Block comments"
+msgstr "Iruzkinak blokeatu"
+
+#: ckanext/comments/templates/comments/snippets/comment_form.html:16
+msgid "Unblock comments"
+msgstr "Iruzkinak desblokeatu"
+
+#: ckanext/comments/logic/action.py:769
+msgid "The message was not sent because the entity has messages disabled."
+msgstr "Mezua ez da bidali entitateak mezuak desgaituta dituelako."

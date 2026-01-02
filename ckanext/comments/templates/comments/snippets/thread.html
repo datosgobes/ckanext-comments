@@ -11,12 +11,28 @@ subject_type - type of the subject for thread
 {% asset 'comments/comments-thread-styles' %}
 
 <div data-module="comments-thread" data-module-subject-id="{{ thread.subject_id }}" data-module-subject-type="{{ thread.subject_type }}">
+    
+    {% block comment_blocking %}
+        {% set blocked_add_comments = h.comments_is_a_blocked_entity(subject_id, subject_type) %}
+        {% if blocked_add_comments and h.check_access('comments_blocked_entity_delete') %}
+        <div class="w--100 flex-justify-center flex mt-3 mb-3">
+            <button id="unblock_comments" class="btn btn--secondary btn-danger" title="{{ _('Unblock comments')}}"> {{ _('Unblock comments')}}</button>
+        </div>
+        {% elif not blocked_add_comments and h.check_access('comments_blocked_entity_create') %}
+          <div class="w--100 flex-justify-center flex mt-3 mb-3">
+            <button id="block_comments" class="btn btn--secondary btn-danger" title="{{ _('Block comments')}}"> {{ _('Block comments')}}</button>
+          </div>
+        {% endif %}
+    {% endblock %}
+    <div>
+      {% snippet 'comments/snippets/comment_button.html', subject_id=subject_id, subject_type=subject_type %}
+    </div>
     {% if thread.comments %}
         <h3 class="heading">{{ _('Comments') }}</h3>
-        {% snippet 'comments/snippets/comments_list.html', comments=thread.comments %}
+        {% snippet 'comments/snippets/comments_list.html', comments=thread.comments, subject_id=thread.subject_id, subject_type=thread.subject_type %}
     {% endif %}
+    {% snippet 'comments/snippets/comment_form.html', subject_id=subject_id, subject_type=subject_type %}
 
-    {% if h.check_access('comments_comment_create', thread) %}
-        {% snippet 'comments/snippets/comment_form.html', subject_id=thread.subject_id, subject_type=thread.subject_type %}
-    {% endif %}
+    
+   
 </div>

@@ -1,0 +1,164 @@
+# Translations template for ckanext-comments.
+# Copyright (C) 2025 Entidad Pública Empresarial Red.es
+#
+# This file is part of "comments (datos.gob.es)".
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ckanext-comments 0.0.1\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2024-12-11 11:26+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.7.0\n"
+
+#: ckanext/comments/templates/comments/snippets/comment_form.html:8
+msgid "Add new comment"
+msgstr ""
+
+#: ckanext/comments/assets/js/comments-thread.js:241
+msgid "An Error Occurred"
+msgstr ""
+
+#: ckanext/comments/templates/comments/snippets/comment.html:33
+#: ckanext/comments/templates/comments/snippets/comment.html:34
+msgid "Approve"
+msgstr ""
+
+#: ckanext/comments/templates/comments/snippets/confirmation.html:18
+msgid "Are you sure you want to permanently delete this comment?"
+msgstr ""
+
+#: ckanext/comments/assets/js/comments-thread.js:146
+#: ckanext/comments/templates/comments/snippets/confirmation.html:35
+msgid "Cancel"
+msgstr ""
+
+#: ckanext/comments/templates/comments/snippets/comment_form.html:19
+#: ckanext/comments/templates/comments/snippets/comment_form.html:33
+msgid "Comment"
+msgstr ""
+
+#: ckanext/comments/assets/js/comments-thread.js:242
+msgid "Comment cannot be updated"
+msgstr ""
+
+#: ckanext/comments/templates/comments/snippets/thread.html:15
+msgid "Comments"
+msgstr ""
+
+#: ckanext/comments/templates/comments/snippets/confirmation.html:15
+msgid "Confirmation window"
+msgstr ""
+
+#: ckanext/comments/templates/comments/snippets/comment_form.html:39
+msgid ""
+"Datos.gob.es wants to encourage the participation of users through comments "
+"that contribute to enriching the content published on the website. The "
+"comments received will be reviewed and approved by the portal management team"
+" to ensure quality. It reserves the right to remove comments that it deems "
+"inappropriate. Therefore, comments that include insults, disqualifications or"
+" considerations unrelated to the content in question will not be published. "
+"Comments that include personal data or that allow the identification of "
+"deceased people will not be published."
+msgstr ""
+
+#: ckanext/comments/templates/comments/snippets/comment.html:40
+#: ckanext/comments/templates/comments/snippets/comment.html:41
+msgid "Unpublish"
+msgstr ""
+
+#: ckanext/comments/templates/comments/snippets/comment.html:47
+#: ckanext/comments/templates/comments/snippets/comment.html:48
+msgid "Edit"
+msgstr ""
+
+#: ckanext/comments/templates/comments/snippets/comment_form.html:28
+msgid "Email"
+msgstr ""
+
+#: ckanext/comments/templates/comments/snippets/confirmation.html:28
+msgid "Email body"
+msgstr ""
+
+#: ckanext/comments/templates/comments/snippets/confirmation.html:21
+msgid "Email notification"
+msgstr ""
+
+#: ckanext/comments/templates/comments/snippets/confirmation.html:24
+msgid "Email subject"
+msgstr ""
+
+#: ckanext/comments/templates/comments/snippets/comments_list.html:10
+msgid "Hide answers"
+msgstr ""
+
+#: ckanext/comments/templates/comments/snippets/comment_form.html:40
+msgid ""
+"I consent to Red.es, with Tax ID Q-2891006-E, as the data controller, "
+"processing the data provided directly by me, as well as data obtained "
+"indirectly from my activity, in accordance with the Privacy Policy and with "
+"the General Directors Instruction on Exercising Rights to Personal Data "
+"Protection, available at the following link: <a href=\"https://www.red.es/es"
+"/proteccion-de-datos\"> Personal data protection*</a><span class=\"control-required\">* </span>"
+msgstr ""
+
+#: ckanext/comments/templates/comments/snippets/comment_form.html:23
+msgid "Indicates required fields"
+msgstr ""
+
+#: ckanext/comments/templates/comments/snippets/comment.html:26
+#: ckanext/comments/templates/comments/snippets/confirmation.html:36
+#: ckanext/comments/templates/comments/snippets/confirmation.html:37
+msgid "Remove"
+msgstr ""
+
+#: ckanext/comments/assets/js/comments-thread.js:143
+#: ckanext/comments/templates/comments/snippets/comment_form.html:8
+msgid "Reply"
+msgstr ""
+
+#: ckanext/comments/templates/comments/snippets/comment.html:50
+#: ckanext/comments/templates/comments/snippets/comment.html:51
+#: ckanext/comments/templates/comments/snippets/comment_form.html:43
+msgid "Save"
+msgstr ""
+
+#: ckanext/comments/templates/comments/snippets/comment.html:11
+#, python-format
+msgid "Submitted by %(author)s on %(date)s"
+msgstr ""
+
+#: ckanext/comments/templates/comments/snippets/comment_form.html:30
+msgid "The content of this field is kept private and will not be shown publicly."
+msgstr ""
+
+#: ckanext/comments/templates/comments/snippets/comments_list.html:9
+msgid "View answers"
+msgstr ""
+
+#: ckanext/comments/templates/comments/snippets/comment_form.html:14
+msgid "Your comment has been sent successfully"
+msgstr ""
+
+#: ckanext/comments/templates/comments/snippets/comment_form.html:26
+msgid "Your name"
+msgstr ""
+

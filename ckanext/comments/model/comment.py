@@ -1,10 +1,27 @@
+# Copyright (C) 2025 Entidad Pública Empresarial Red.es
+#
+# This file is part of "comments (datos.gob.es)".
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+
 from __future__ import annotations
 
 import logging
 from datetime import datetime
 from typing import Any, Callable, Optional
 
-from sqlalchemy import Column, DateTime, ForeignKey, Text
+from sqlalchemy import Column, DateTime, ForeignKey, Text, BOOLEAN
 from sqlalchemy.dialects.postgresql import JSONB
 
 from sqlalchemy.orm import foreign, relationship
@@ -50,6 +67,10 @@ class Comment(Base):
 
     extras = Column(JSONB, nullable=False, default=dict)
 
+    email = Column(Text, nullable=True)
+    username = Column(Text, nullable=True)
+    consent = Column(BOOLEAN, nullable=True)
+
     thread: Any = relationship(Thread, single_parent=True)
 
     user: Any = relationship(
@@ -71,6 +92,9 @@ class Comment(Base):
             f"author_id={self.author_id!r},"
             f"author_type={self.author_type!r},"
             f"reply_to_id={self.reply_to_id!r},"
+            f"email={self.email!r},"
+            f"username={self.username!r},"
+            f"consent={self.consent!r},"
             ")"
         )
 
@@ -84,9 +108,12 @@ class Comment(Base):
 
     def approve(self) -> None:
         self.state = self.State.approved
+    
+    def draft(self) -> None:
+        self.state = self.State.draft
 
     def is_approved(self) -> bool:
-        return self.state == self.State.approved  # type: ignore
+        return self.state == self.State.approved
 
     def is_authored_by(self, name: str) -> bool:
         if self.user:
@@ -95,8 +122,8 @@ class Comment(Base):
 
     def get_author(self) -> Optional[Author]:
         try:
-            getter = self._author_getters[self.author_type]  # type: ignore
+            getter = self._author_getters[self.author_type]  
         except KeyError:
             log.error("Unknown subject type: %s", self.author_type)
             raise UnsupportedAuthorType(self.author_type)
-        return getter(self.author_id)  # type: ignore
+        return getter(self.author_id)

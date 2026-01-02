@@ -6,6 +6,11 @@
   {% set mobile_depth = h.comments_mobile_depth_threshold() %}
 {% endif %}
 
+{% set ver_respuestas = _('View answers') %}
+{% set ocultar_respuestas = _('Hide answers') %}
+
+{% set comments = h.comments_order_date(comments) %}
+
 <ul class="list-unstyled comments-thread">
 
   {% for comment in comments recursive %}
@@ -13,12 +18,42 @@
       <li class="comments-comment mobile-hidden-comment visible-xs">...</li>
     {% endif %}
     <li class="comments-comment {% if loop.depth > mobile_depth %} hidden-xs{% endif %}">
-      {% snippet 'comments/snippets/comment.html', comment=comment %}
+      {% snippet 'comments/snippets/comment.html', comment=comment, subject_id=subject_id, subject_type=subject_type %}
 	    {% if comment.replies %}
-        <ul class="list-unstyled comments-thread">
-		      {{ loop(comment.replies) }}
+        <a href="javascript:void(0)" class="toggle-replies" data-comment-id="{{ comment.id }}" 
+        data-show-text="{{ ver_respuestas }}"
+        data-hide-text="{{ ocultar_respuestas }}">
+          {{ ver_respuestas }}
+        </a>
+
+        <ul class="list-unstyled comments-thread replies" id="replies-{{ comment.id }}" style="display: none;">
+          {{ loop(comment.replies) }}
         </ul>
 	    {% endif %}
     </li>
   {% endfor %}
 </ul>
+
+<script type="text/javascript">
+  document.addEventListener('DOMContentLoaded', function() {
+      const toggleLinks = document.querySelectorAll('.toggle-replies');
+
+      toggleLinks.forEach(link => {
+          link.addEventListener('click', function() {
+              const commentId = this.getAttribute('data-comment-id');
+              const repliesDiv = document.getElementById('replies-' + commentId);
+              const isVisible = repliesDiv.style.display === 'block';
+              const showText = this.getAttribute('data-show-text');
+              const hideText = this.getAttribute('data-hide-text');
+
+              if (isVisible) {
+                  repliesDiv.style.display = 'none';
+                  this.textContent = showText;
+              } else {
+                  repliesDiv.style.display = 'block';
+                  this.textContent = hideText;
+              }
+          });
+      });
+  });
+</script>

@@ -1,3 +1,22 @@
+/*
+* Copyright (C) 2025 Entidad Pública Empresarial Red.es
+*
+* This file is part of "comments (datos.gob.es)".
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
+
 .comments-thread .comments-thread {
   padding-inline-start: 15px;
   border-inline-start: 1px solid grey;
@@ -67,4 +86,24 @@
 }
 .comment .comment-footer .reply-actions .reply-action:last-child {
   margin-inline-end: 0;
+}
+
+.comment-form .form-group.comment-email.error{
+  color: #b55457;
+}
+.comment-form .form-group.comment-consent.error{
+  color: #b55457;
+}
+.comment-form .form-group.comment-content.error{
+  color: #b55457;
+}
+
+.comment-form .send-form-ok{
+  background: greenyellow;
+  text-align: center;
+  display: none;
+}
+
+.email-notification-deleted{
+  display: none;
 }

@@ -1,3 +1,20 @@
+# Copyright (C) 2025 Entidad Pública Empresarial Red.es
+#
+# This file is part of "comments (datos.gob.es)".
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+
 from __future__ import annotations
 
 import logging
@@ -11,7 +28,7 @@ import ckan.lib.dictization.model_dictize as md
 import ckan.model as model
 import ckan.plugins.toolkit as tk
 
-from ckanext.comments.model import Comment, Thread
+from ckanext.comments.model import Comment, Thread, BlockedEntity
 
 from ..utils import is_moderator
 
@@ -59,7 +76,6 @@ def thread_dictize(obj: Thread, context: Any) -> dict[str, Any]:
         include_author = tk.asbool(context.get("include_author"))
         after_date = context.get("after_date")
 
-        # let's make it a bit more efficient
         if include_author:
             query = query.options(joinedload(Comment.user))
 
@@ -71,10 +87,7 @@ def thread_dictize(obj: Thread, context: Any) -> dict[str, Any]:
         elif user is None:
             query = query.filter(approved_filter)
         elif not is_moderator(user, None, obj):
-            own_filter = (Comment.author_type == "user") & (
-                Comment.author_id == user.id
-            )
-            query = query.filter(approved_filter | own_filter)  # type: ignore
+            query = query.filter(approved_filter)
 
         if after_date:
             date_filer = Comment.created_at >= after_date
@@ -104,6 +117,11 @@ def comment_dictize(obj: Comment, context: Any, **extra: Any) -> dict[str, Any]:
     return d.table_dictize(obj, context, **extra)
 
 
+def blocked_entity_dictize(obj: BlockedEntity, context: Any, **extra: Any) -> dict[str, Any]:
+    return d.table_dictize(obj, context, **extra)
+
 register_dictizer(model.User, md.user_dictize)
 register_dictizer(Thread, thread_dictize)
 register_dictizer(Comment, comment_dictize)
+register_dictizer(BlockedEntity, blocked_entity_dictize)
+
