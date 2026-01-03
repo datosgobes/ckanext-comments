@@ -1,192 +1,133 @@
-[![Tests](https://github.com/DataShades/ckanext-comments/actions/workflows/test.yml/badge.svg)](https://github.com/DataShades/ckanext-comments/actions/workflows/test.yml)
-
 # ckanext-comments
 
-Add comment-trees to CKAN pages.
+`ckanext-comments` es una extensión para CKAN utilizada en la plataforma [datos.gob.es](https://datos.gob.es/) para permitir la creación y gestión de hilos de comentarios en las diferentes entidades del portal (conjuntos de datos, recursos, etc.).
 
-This plugins provides comment threads linked to any of the main CKAN entities:
+> [!TIP]
+> Guía base y contexto del proyecto: https://github.com/datosgobes/datos.gob.es
 
-* datasets
-* resources
-* groups
-* organizations
-* users.
+## Descripción general
 
-All the features are API-first, so anything you can do via UI, can be done via API.
+Esta extensión permite hilos de comentarios vinculados a las principales entidades de CKAN:
+- Conjuntos de datos (*datasets*)
+- Recursos
+- Grupos
+- Organizaciones
+- Usuarios
 
-No changes to the WebUI are done by default. One have to include a snippet into
-Jinja2 template in order to show the comments on a page.
-```jinja2
-{# subject_type := package | group | resource | user #}
-{% snippet 'comments/snippets/thread.html', subject_id=pkg.id, subject_type='package' %}
+## Requisitos
+
+- Una instancia de CKAN.
+- Librerías Python adicionales ([`requirements`](requirements.txt))/[`setup.py.install_requires`](setup.py)
+
+### Compatibilidad
+
+Compatibilidad con versiones de CKAN:
+
+| Versión de CKAN | ¿Compatible?                                                              |
+|--------------|-----------------------------------------------------------------------------|
+| 2.8          | ❌ No                                                                        |
+| 2.9          | ✅ Sí                                                                        |
+| 2.10         | ✅ Sí                                                                        |
+| 2.11         | ❓ Desconocido                                                               |
+
+## Instalación
+
+```sh
+pip install -r requirements.txt
+pip install -e .
 ```
 
-:info: For the datasets it also can be achieved by enabling
-`ckanext.comments.enable_default_dataset_comments` option.
+## Configuración
 
-## Requirements
+### Plugins
 
-* python >= 3.7
-* CKAN >= 2.9
+Activa el plugin en tu configuración de CKAN:
 
-## Installation
-
-To install ckanext-comments:
-
-1. Install python package
-  ```sh
-  pip install ckanext-comments
-  ```
-
-1. Add `comments` to the `ckan.plugins` setting in your CKAN
-   config file
-
-1. Apply database migrations
-  ```sh
-  ckan db upgrade -p comments
-  ```
-
-1. Add `cooments/snippets/thread.html` to your `package/read.html` template, like this:
-  ```jinja2
-  {% ckan_extends %}
-
-  {% block primary_content_inner %}
-    {{ super() }}
-    {% snippet 'comments/snippets/thread.html', subject_id=pkg.id, subject_type='package' %}
-  {% endblock primary_content_inner %}
-  ```
-
-## Config settings
 ```ini
+ckan.plugins = … comments
+```
 
-# Require comment approval in order to make it visible
-# (optional, default: true).
+### Configuración en `ckan.ini`
+
+> [!NOTE]
+> La configuración específica de [datos.gob.es](https://datos.gob.es/) está documentada en:
+> https://github.com/datosgobes/datos.gob.es/blob/master/docs/202512_datosgobes-ckan-doc_es.pdf (sección correspondiente a extensiones).
+
+Parámetros disponibles para configurar el comportamiento de los comentarios:
+
+```ini
+# Requerir aprobación de comentarios para que sean visibles
+# (opcional, por defecto: true).
 ckanext.comments.require_approval = false
 
-# Editor(admin) can edit draft comments
-# (optional, default: true).
+# Editor (admin) puede editar borradores de comentarios
+# (opcional, por defecto: true).
 ckanext.comments.draft_edits = true
 
-# Author can edit own draft comments
-# (optional, default: true).
+# El autor puede editar sus propios borradores
+# (opcional, por defecto: true).
 ckanext.comments.draft_edits_by_author = false
 
-# Editor(admin) can edit approved comments
-# (optional, default: false).
+# Editor (admin) puede editar comentarios ya aprobados
+# (opcional, por defecto: false).
 ckanext.comments.approved_edits = false
 
-# Author can edit own approved comments
-# (optional, default: false).
+# El autor puede editar sus propios comentarios aprobados
+# (opcional, por defecto: false).
 ckanext.comments.approved_edits_by_author = false
 
-# Number of reply levels that are shown on mobile layout
-# (optional, default: 3).
+# Niveles de anidamiento mostrados en diseño móvil
+# (opcional, por defecto: 3).
 ckanext.comments.mobile_depth_threshold = 3
 
-# Include default thread implementation on the dataset page
-# (optional, default: false).
+# Incluir implementación por defecto de hilos en la página del dataset
+# Si se activa, no es necesario editar las plantillas manualmente para datasets.
+# (opcional, por defecto: false).
 ckanext.comments.enable_default_dataset_comments = true
 
-# Register custom getter for a subject by providing a path to a function
+# Registrar un getter personalizado para un sujeto proporcionando la ruta a una función
 # ckanext.comments.subject.{self.subject_type}_getter = path
-# The function must accept an ID and return a model object
-ckanext.comments.subject.question_getter = ckanext.msf_ask_question.model.question_getter
+# La función debe aceptar un ID y devolver un objeto del modelo.
+# Ejemplo:
+# ckanext.comments.subject.question_getter = ckanext.msf_ask_question.model.question_getter
 ```
 
+### Integración en Plantillas (Templates)
 
+Si no se usa la opción automática para datasets (`enable_default_dataset_comments`), es necesario incluir el *snippet* en las plantillas Jinja2 donde se quieran mostrar los comentarios.
+
+Ejemplo para `package/read.html`:
+
+```jinja2
+{% ckan_extends %}
+
+{% block primary_content_inner %}
+  {{ super() }}
+  {# subject_type := package | group | resource | user #}
+  {% snippet 'comments/snippets/thread.html', subject_id=pkg.id, subject_type='package' %}
+{% endblock primary_content_inner %}
+```
+
+### Migraciones de base de datos
+
+Para crear/actualizar el modelo de datos de comentarios:
+
+```sh
+ckan -c /etc/ckan/default/ckan.ini db upgrade -p comments
+```
 
 ## API
 
-### `comments_thread_create`
-Create a thread for the subject.
-
-Args:
-* subject_id(str): unique ID of the commented entity
-* subject_type(str:package|resource|user|group): type of the commented entity
-
-### `comments_thread_show`
-Show the subject's thread.
-
-Args:
-* subject_id(str): unique ID of the commented entity
-* subject_type(str:package|resource|user|group): type of the commented entity
-* init_missing(bool, optional): return an empty thread instead of 404
-* include_comments(bool, optional): show comments from the thread
-* include_author(bool, optional): show authors of the comments
-* combine_comments(bool, optional): combine comments into a tree-structure
-* after_date(str:ISO date, optional): show comments only since the given date
-
-### `comments_thread_delete`
-Delete the thread.
-
-Args:
-* id(str): ID of the thread
-
-### `comments_comment_create`
-Add a comment to the thread.
-
-Args:
-* subject_id(str): unique ID of the commented entity
-* subject_type(str:package|resource|user|group): type of the commented entity
-* content(str): comment's message
-* reply_to_id(str, optional): reply to the existing comment
-* create_thread(bool, optional): create a new thread if it doesn't exist yet
-
-### `comments_comment_show`
-Show the details of the comment
-
-Args:
-* id(str): ID of the comment
-
-### `comments_comment_approve`
-Approve draft comment
-
-Args:
-* id(str): ID of the comment
-
-### `comments_comment_delete`
-Remove existing comment
-
-Args:
-* id(str): ID of the comment
-
-### `comments_comment_update`
-Update existing comment
-
-Args:
-* id(str): ID of the comment
-* content(str): comment's message
-
+La extensión personalizada para [datos.gob.es](https://datos.gob.es/) bloquea los endpoints de la API para la gestión de hilos y comentarios.
 
 ## Tests
 
-To run the tests, do:
 ```sh
-pytest
+pytest --ckan-ini=test.ini
 ```
 
+## Licencia
 
-## Attribution and origin of the code
+Este proyecto se distribuye bajo licencia **GNU Affero General Public License (AGPL) v3.0**. Consulta el fichero [LICENSE](LICENSE).
 
-This development is based on the ckanext-comments project, created and maintained by DataShades, available in its public repository under AGPL-3.0 licence.
-
-This work has been adapted, expanded and modified by the public entity Red.es for integration and use on the datos.gob.es portal. The modifications include functional, structural and presentation adjustments, as well as the incorporation of specific headers in the modified files to reflect the changes made.
-
-In accordance with the terms of the AGPL-3.0 licence, recognition of the original project and redistribution of the derivative code under the same licence is maintained.
-
-## Main modifications introduced
-
-* Adaptation of the behaviour of the comment system to the functional requirements of datos.gob.es.
-
-* Customisation of Jinja2 templates and snippets.
-
-* Incorporation of new licence headers for modified files.
-
-* Internal improvements in the management of comment threads, permissions and approval flows.
-
-* Integration with components specific to the CKAN environment deployed by datos.gob.es
-
-
-## License
-
-[AGPL](https://www.gnu.org/licenses/agpl-3.0.en.html)
+De acuerdo con los términos de la licencia AGPL-3.0, se mantiene el reconocimiento al proyecto original ([DataShades/ckanext-comments](https://github.com/DataShades/ckanext-comments)) y la redistribución del código derivado bajo la misma licencia.
