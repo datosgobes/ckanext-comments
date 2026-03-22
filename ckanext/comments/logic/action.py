@@ -1,4 +1,4 @@
-# Copyright (C) 2025 Entidad Pública Empresarial Red.es
+# Copyright (C) 2026 Entidad Pública Empresarial Red.es
 #
 # This file is part of "comments (datos.gob.es)".
 #
@@ -54,6 +54,7 @@ log = logging.getLogger(__name__)
 ROLE_ADMINISTRATOR = 'zzzz'
 ROLE_APORTA = 'yyyy'
 ROLE_PUBLICADOR = 'xxxx'
+MAX_COMMENTS_LENGTH = 300
 
 _actions = {}
 
@@ -278,7 +279,16 @@ def comment_create(context, data_dict):
 def get_all_comments_ckan_from_package():
     
     comments_with_title = model.Session.query(
-        Comment, model.Package
+        Comment.id.label("Comment_id"),
+        Comment.thread_id.label("Comment_thread_id"),
+        truncated.label("Comment_content"),
+        Comment.state.label("Comment_state"),
+        Comment.username.label("Comment_username"),
+        Comment.email.label("Comment_email"),
+        Comment.created_at.label("Comment_created_at"),
+        model.Package.id.label("Package_id"),
+        model.Package.name.label("Package_name"),
+        model.Package.title.label("Package_title"),
     ).join(
         Thread, Comment.thread_id == Thread.id
     ).join(
@@ -287,15 +297,26 @@ def get_all_comments_ckan_from_package():
         Thread.subject_type == 'package'
     ).all()
 
-    salida= flatten_join_prefix(comments_with_title)
-    
-    return json.dumps({"data":salida}, cls=AlchemyEncoder)
+    # Return formatted comments
+    return _generate_api_result(comments_with_title)
  
 
 def get_all_comments_ckan_from_package_by_user(ckan_user_id):
-    
+    # Truncate comment generation
+    truncated = _get_tructate_query()
+
+    # Query to get comments with associated package titles for a specific user
     comments_with_title = model.Session.query(
-        Comment, model.Package
+        Comment.id.label("Comment_id"),
+        Comment.thread_id.label("Comment_thread_id"),
+        truncated.label("Comment_content"),
+        Comment.state.label("Comment_state"),
+        Comment.username.label("Comment_username"),
+        Comment.email.label("Comment_email"),
+        Comment.created_at.label("Comment_created_at"),
+        model.Package.id.label("Package_id"),
+        model.Package.name.label("Package_name"),
+        model.Package.title.label("Package_title"),
     ).join(
         Thread, Comment.thread_id == Thread.id
     ).join(
@@ -309,12 +330,13 @@ def get_all_comments_ckan_from_package_by_user(ckan_user_id):
     ).filter(
         Thread.subject_type == 'package',
         model.Package.state == 'active',
-        model.Member.state == 'active'
+        model.Member.state == 'active',
+        model.Member.table_name == 'user',
+        model.Member.table_id == ckan_user_id
     ).all()
 
-    salida= flatten_join_prefix(comments_with_title)
-    
-    return json.dumps({"data":salida}, cls=AlchemyEncoder)
+    # Return formatted comments
+    return _generate_api_result(comments_with_title)
        
 def approve_comment_by_role(author,comment,data_dict):
     
@@ -341,7 +363,7 @@ def user_belong_to_same_organization( author, data_dict):
 
     for member in members:
         user = model.User.get(member[0])
-        if user.email == email_commenting_user:
+        if user and user.email == email_commenting_user:
             email_belong_to = True 
     
     return email_belong_to
@@ -390,6 +412,9 @@ def generate_send_organism_mail(comment, data_dict):
         if user and  user.state == 'active' and user.email and len(user.email) > 0:
             mail_to.append(user.email)
 
+    #CC
+    mail_ccs = conf.get('smtp.mail_cc', '').split(' ')
+    
     subject = conf.get('ckanext.comments.email.subject.send_mail_organismo') 
     path = conf.get('ckanext.comments.template.emails') 
     url = conf.get('ckanext.comments.url.images.drupal')
@@ -414,10 +439,12 @@ def generate_send_organism_mail(comment, data_dict):
         msg = MIMEMultipart()
         msg['From'] = email_from
         msg['To'] = addressees
+        if mail_ccs and len(mail_ccs) > 0:
+            msg['Cc'] = ", ".join(mail_ccs)
         msg['Subject'] = subject
 
         msg.attach(MIMEText(body, 'html'))
-        send_email(mail_to, msg)
+        send_email((mail_to + mail_ccs), msg)
 
 
 
@@ -427,7 +454,7 @@ def send_email( addressees, msg):
     if addressees and msg:
 
         smtp_connection = smtplib.SMTP()
-        smtp_server = conf.get('smtp.server', '')
+        smtp_server = conf.get('smtp.server', 'localhost')
         smtp_starttls = False
         smtp_user = conf.get('smtp.user')
         smtp_password = conf.get('smtp.password')
@@ -768,3 +795,57 @@ def _check_blocked(data_dict):
     if is_a_blocked_entity(subject_id, subject_type):
         log.info(f'[_check_blocked] The {subject_type} with ID {subject_id} has comments blocked.')
         raise tk.ValidationError({"subject": [_('The message was not sent because the entity has messages disabled.')]})
+
+def _get_tructate_query():
+    """
+    Truncate comment content to MAX_COMMENTS_LENGTH characters, stripping HTML tags.
+
+    Returns:
+        sqlalchemy.sql.elements.Case: SQLAlchemy case expression.
+    """
+    clean_text = func.regexp_replace(Comment.content, '<[^>]+>', '', 'g')
+    truncated = case(
+        [
+            (
+                func.length(clean_text) > MAX_COMMENTS_LENGTH,
+                func.concat(func.substring(clean_text, 1, MAX_COMMENTS_LENGTH), '...')
+            )
+        ],
+        else_=clean_text
+    )
+    return truncated
+
+def _generate_api_result(comments):
+    """
+    Generates a JSON API response from a list of comment query results.
+
+    Args:
+        comments (list): List of SQLAlchemy query results
+
+    Returns:
+        str: JSON string
+    """
+    salida = []
+    
+    for comment in comments:
+        created_at = comment.Comment_created_at
+        if isinstance(created_at, datetime):
+            created_at = { 'max': created_at.isoformat() }
+        merged = {
+            # Campos de Comment
+            "Comment_id": comment.Comment_id,
+            "Comment_thread_id": comment.Comment_thread_id,
+            "Comment_content":  comment.Comment_content,
+            "Comment_state": comment.Comment_state,
+            "Comment_username": comment.Comment_username,
+            "Comment_email": comment.Comment_email,
+            "Comment_created_at": created_at,
+            
+            # Campos de Package
+            "Package_id": comment.Package_id,
+            "Package_name": comment.Package_name,
+            "Package_title": comment.Package_title,
+        }
+        salida.append(merged)
+
+    return json.dumps({"data":salida}, cls=AlchemyEncoder)

@@ -9,7 +9,7 @@
 <div class="comment comment-state-{{ comment.state }}" id="comment-{{ comment.id }}">
     <div class="comment-heading">
         {% set comment_author = comment.author.fullname or comment.author.name or comment.username or "anónimo" %}
-        {% set comment_date = h.comments_custom_date_comments(comment.modified_at or comment.created_at) %}
+        {% set comment_date = h.comments_custom_date_comments(comment.created_at) %}
         {% trans author=author_organism, date=comment_date %}
         <div class="flex-display flex-gap-1 flex-baseline mb-2">
             <span class="comment-heading__author">
@@ -26,9 +26,9 @@
     <div class="comment-body">
         <div class="comment-content">
             {% if h.comments_is_html(comment.content) %}
-                <div class="comment-content">{{ comment.content|safe }}</div>
+                <div class="comment-content">{{ comment.content|safe if comment.author_id else comment.content }}</div>
             {% else %}
-                <div class="comment-content">{{- (comment.content)|replace('\n', '\n<br/>'|safe) -}}</div>
+                <div class="comment-content">{{- (comment.content)|replace('\n', '\n<br/>')|safe -}}</div>
             {% endif %}
                 
         </div>

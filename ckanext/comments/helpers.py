@@ -1,4 +1,4 @@
-# Copyright (C) 2025 Entidad Pública Empresarial Red.es
+# Copyright (C) 2026 Entidad Pública Empresarial Red.es
 #
 # This file is part of "comments (datos.gob.es)".
 #
@@ -112,7 +112,7 @@ def parse_date(date_str: str) -> datetime:
 
 @helper
 def order_date(data: List[Dict]) -> List[Dict]:
-    return sorted(data, key=lambda x: parse_date(x['modified_at']) or parse_date(x['created_at']), reverse=True)
+    return sorted(data, key=lambda x: parse_date(x['created_at']), reverse=True)
 
 @helper
 def is_html(content):
@@ -193,7 +193,7 @@ def get_my_author(author_id, comment) -> str:
                 query = '''
                 SELECT m.table_id , m.group_id 
                         FROM "member" m 
-                        WHERE table_id =  :author_id '''
+                        WHERE table_id =  :author_id and m.state = 'active' '''
                 result = model.Session.execute(query, {'author_id':author_id})
                 row = result.fetchone()  
                 table_id, group_id = row

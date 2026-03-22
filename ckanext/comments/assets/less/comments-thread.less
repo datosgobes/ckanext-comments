@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2025 Entidad Pública Empresarial Red.es
+* Copyright (C) 2026 Entidad Pública Empresarial Red.es
 *
 * This file is part of "comments (datos.gob.es)".
 *
@@ -101,9 +101,35 @@
     }
 }
 
+.comment-form {
+  .form-group {
+    &.comment-email.error,
+    &.comment-consent.error,
+    &.comment-content.error {
+      color: #b55457;
+    }
+  }
+
+  .send-form-ok {
+    background: greenyellow;
+    text-align: center;
+    display: none;
+  }
+}
+
+.email-notification-deleted {
+  display: none;
+
+  textarea {
+    height: 10rem;
+  }
+}
+
+
 @media (min-width: 769px) {
     .comment {
         .comment-heading {
+            // flex-direction: row;
         }
     }
 }

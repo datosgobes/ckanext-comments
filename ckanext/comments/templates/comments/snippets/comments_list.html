@@ -55,5 +55,46 @@
               }
           });
       });
+
+  
+  const params = new URLSearchParams(window.location.search);
+  const commentId = params.get('commentId');
+  
+  if (commentId) {
+    const commentElement = document.getElementById(`comment-${commentId}`);
+    
+    if (commentElement) {
+      commentElement.style.display = '';
+      
+      let parent = commentElement.parentElement;
+      while (parent) {
+        if (window.getComputedStyle(parent).display === 'none') {
+          parent.style.display = '';
+        }
+        
+        if (parent.classList && parent.classList.contains('comments-thread') && parent.classList.contains('replies')) {
+          const commentIdParent = parent.id.replace('replies-', '');
+          const toggle = document.querySelector(`.toggle-replies[data-comment-id="${commentIdParent}"]`);
+          if (toggle) {
+            toggle.classList.add('toggle-replies-active');
+            toggle.textContent = toggle.getAttribute('data-hide-text') || 'Ocultar respuestas';
+            parent.style.display = 'block';
+          }
+        }
+        
+        parent = parent.parentElement;
+      }
+      
+      commentElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      
+    }
+  }
+
+
+
+
+
+
+
   });
 </script>
