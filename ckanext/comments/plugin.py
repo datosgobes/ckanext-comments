@@ -1,4 +1,4 @@
-# Copyright (C) 2025 Entidad Pública Empresarial Red.es
+# Copyright (C) 2026 Entidad Pública Empresarial Red.es
 #
 # This file is part of "comments (datos.gob.es)".
 #
@@ -58,16 +58,14 @@ def is_frontend():
 def getAllComments():
     
     api_key = request.headers.get('Authorization')
- 
-    user_obj = model.Session.query(model.User).filter_by(apikey=api_key).first()
-
+    user_obj = None
+    if api_key:
+        user_obj = model.Session.query(model.User).filter_by(apikey=api_key).first()
+    
     if user_obj:
         return action.get_all_comments_ckan_from_package()
     else:
         response_data = {
-            "draw": 1,
-            "recordsTotal": 0,
-            "recordsFiltered": 0,
             "data": [],
             "error": "Unauthorized access"
         }
@@ -80,16 +78,16 @@ def getAllComments():
 @myextension_blueprint.route('/api/3/comments/userId', methods=['GET'])
 def getCommentsByPublicadorId():
     api_key = request.headers.get('Authorization')
- 
-    user_obj = model.Session.query(model.User).filter_by(apikey=api_key).first()
-    ckan_user_id= request.args.get('ckan_user_id')
+    user_obj = None
+    ckan_user_id = ''
+    if api_key:
+        user_obj = model.Session.query(model.User).filter_by(apikey=api_key).first()
+        ckan_user_id = request.args.get('ckan_user_id')
+
     if user_obj:
         return action.get_all_comments_ckan_from_package_by_user(ckan_user_id)
     else:
         response_data = {
-            "draw": 1,
-            "recordsTotal": 0,
-            "recordsFiltered": 0,
             "data": [],
             "error": "Unauthorized access"
         }

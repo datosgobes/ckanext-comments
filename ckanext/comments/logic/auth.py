@@ -1,4 +1,4 @@
-# Copyright (C) 2025 Entidad Pública Empresarial Red.es
+# Copyright (C) 2026 Entidad Pública Empresarial Red.es
 #
 # This file is part of "comments (datos.gob.es)".
 #
@@ -104,6 +104,9 @@ def comment_approve(context, data_dict):
 
 @auth
 def comment_draft(context, data_dict):
+    if not _user_is_sysadmin(context):
+        return {'success': False, 'msg': tk._('Only sysadmins can unpublish comments')}
+
     id = data_dict.get("id")
     if not id:
         return {"success": False}
@@ -120,6 +123,8 @@ def comment_delete(context, data_dict):
 
 @auth
 def comment_update(context, data_dict):
+    if not _user_is_sysadmin(context):
+        return {'success': False, 'msg': tk._('Only sysadmins can delete or edit comments')}
 
     id = data_dict.get("id")
     if not id:
