@@ -92,16 +92,17 @@
 .comment-form .form-group.comment-content.error {
   color: #b55457;
 }
-
-.comment-form .send-form-ok{
+.comment-form .send-form-ok {
   background: greenyellow;
   text-align: center;
   display: none;
 }
-
-.email-notification-deleted{
+.email-notification-deleted {
   display: none;
 }
 .email-notification-deleted textarea {
   height: 10rem;
+}
+.comment-helper{
+  margin-top: 0px;
 }
