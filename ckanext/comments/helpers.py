@@ -236,3 +236,43 @@ def is_a_blocked_entity(id_: Optional[str], type_: str) -> bool:
         return False
     log.info('return False')
     return False
+
+@helper
+def dge_comment_public_name() -> str:
+
+    try:
+        username = getattr(g, "user", None)
+        if not username:
+            return ""
+        user = model.User.by_name(username)
+        if not user:
+            return ""
+        if is_admin_author(user.id):
+            return "datos.gob.es"
+        org_title = _dge_user_org_title(user.id)
+        return org_title or ""
+    except Exception as e:
+        log.error("helper.py comment: Error en dge_comment_public_name: %s", e)
+        return ""
+    
+def _dge_user_org_title(user_id: str) -> str:
+
+    try:
+        query = '''
+            SELECT g.title
+            FROM member m
+            JOIN "group" g ON g.id = m.group_id
+            WHERE m.table_id = :user_id
+            AND m.table_name = 'user'
+            AND m.state = 'active'
+            AND g.type = 'organization'
+            AND g.state = 'active'
+            ORDER BY g.title
+            LIMIT 1;
+	    '''
+        result = model.Session.execute(query, {"user_id": user_id})
+        row = result.fetchone()
+        return row[0] if row and row[0] else ""
+    except Exception as e:
+        log.error("helper.py comment: Error obteniendo org title: %s", e)
+        return ""

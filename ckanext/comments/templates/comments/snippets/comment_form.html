@@ -8,13 +8,23 @@
   {{ h.csrf_input() }}
   <fieldset>
     {% if c.user %}
+      <div class="container mt-2 mb-2 flex-gap-05">
+        <span class="control-required">* </span><span class="italic">{{_('Indicates required fields')}}</span>
+      </div>
       {# Fields for logged in users #}
+      {% set comment_helper_org = h.comments_dge_comment_public_name() %}
+      {% if comment_helper_org %}
+        <p class="comment-helper italic">
+          {{ _('El comentario aparecerá publicado en nombre de') }}
+          <strong>{{ comment_helper_org }}</strong>
+        </p>
+      {% endif %}
       {{ form.textarea('content', id='comment-content', classes=['comment-content'],  is_required =true, label=_('Comment')) }}
       <p class="italic">{{ _('Datos.gob.es wants to encourage the participation of users through comments that contribute to enriching the content published on the website. The comments received will be reviewed and approved by the portal management team to ensure quality. It reserves the right to remove comments that it deems inappropriate. Therefore, comments that include insults, disqualifications or considerations unrelated to the content in question will not be published. Comments that include personal data or that allow the identification of deceased people will not be published.') }}</p>
     {% else %}
-    <div class="container mt-2 mb-2 flex-gap-05">
-      <span class="control-required">* </span><span class="italic">{{_('Indicates required fields')}}</span>
-    </div>
+      <div class="container mt-2 mb-2 flex-gap-05">
+        <span class="control-required">* </span><span class="italic">{{_('Indicates required fields')}}</span>
+      </div>
       {{ form.input('username', id='comment-name', label=_('Your name')) }}
 
       {{ form.input('email', type='email', id='comment-email', classes=['comment-email'],  is_required = 'true', label=_('Email')) }}
@@ -31,8 +41,9 @@
     <input type="hidden" id='successful-sending-message' name='successful-sending-message' value="{{_('Thank you for posting a new comment on datos.gob.es portal. Your comment has been queued for review by site administrators and will be published after approval.')}}" />
     <input type="checkbox" name="url" value="1" style="display:none !important" tabindex="-1" autocomplete="off">
     <div class="form-group control-full flex flex-justify-center mt-5">
-    <button type="submit" class="btn btn-primary">
-      {{ _('Save') }}
-    </button>
-  </div>
+      <button type="submit" class="btn btn-primary">
+        {{ _('Save') }}
+      </button>
+    </div>
+  </fieldset>
 </form>
